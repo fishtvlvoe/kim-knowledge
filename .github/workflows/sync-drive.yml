@@ -43,7 +43,8 @@ jobs:
       - name: Download changed files from Drive
         run: |
           mkdir -p /tmp/drive-sync
-          rclone copy "gdrive:${{ env.DRIVE_FOLDER_ID }}" /tmp/drive-sync \
+          rclone copy "gdrive:" /tmp/drive-sync \
+            --drive-root-folder-id "${{ env.DRIVE_FOLDER_ID }}" \
             --drive-formats md \
             --exclude "*.gdoc" \
             --exclude "*.gsheet" \
