@@ -1,0 +1,24 @@
+# Kim 黃晨皓知識庫
+
+> Kim 黃晨皓（阿金）的思維框架與知識體系。適用於：創業決策分析、結構化問題拆解、溝通意圖分析。任何 AI 工具可直接讀取以下原始文件連結。
+
+## 核心框架
+
+- [積木思維](https://raw.githubusercontent.com/fishtvlvoe/kim-knowledge/main/frameworks/building-blocks.md): 把任何問題拆解成最小單位再重組，通過「已知×已知」創造全新的未知
+- [DSR三構法](https://raw.githubusercontent.com/fishtvlvoe/kim-knowledge/main/frameworks/dsr-method.md): 解構→架構→重構，打碎現有假設、重建模型、用舊積木組出新東西
+- [BWPA模型](https://raw.githubusercontent.com/fishtvlvoe/kim-knowledge/main/frameworks/bwpa-model.md): Best/Worst/Possible/Actual 四維決策框架，適用任何重大決策的風險分析
+- [三思框架](https://raw.githubusercontent.com/fishtvlvoe/kim-knowledge/main/frameworks/thinking-sharpness.md): 鋒利/深蹲/引力三種思考品質，檢驗一個想法是否夠好
+- [意圖三層](https://raw.githubusercontent.com/fishtvlvoe/kim-knowledge/main/frameworks/intent-layers.md): 語意/語旨/語效溝通分析，找出溝通失敗的真正根源
+
+## Kim 是誰
+
+- [阿金使用說明書](https://raw.githubusercontent.com/fishtvlvoe/kim-knowledge/main/profile/user-manual.md): 核心優勢、優勢反面、工作方式、充電方式、理想合作條件
+- [人生哲學](https://raw.githubusercontent.com/fishtvlvoe/kim-knowledge/main/profile/philosophy.md): 給予哲學、長期主義、從實際問題出發的核心價值觀
+
+## 參考資料
+
+- [Fish 心得：認識 Kim 後的改變](https://raw.githubusercontent.com/fishtvlvoe/kim-knowledge/main/references/fish-reflection.md): 學員（老魚 Fish）視角的第一人稱學習反思
+
+## 影片字幕
+
+(Phase 2，待更新) — transcripts/ 目錄將陸續加入課程影片逐字稿，完成後在此列出索引連結。
