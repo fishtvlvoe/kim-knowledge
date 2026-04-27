@@ -1,0 +1,95 @@
+name: Sync Google Drive
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 每日 UTC 02:00（台灣時間 10:00）
+  workflow_dispatch:      # 支援手動觸發
+
+env:
+  DRIVE_FOLDER_ID: 1q9Fhfbp3sDG7nisIVSmk3SKSL6AMT7nT
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify secret exists
+        run: |
+          if [ -z "${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}" ]; then
+            echo "ERROR: GDRIVE_SERVICE_ACCOUNT_JSON secret is not set."
+            echo "Please add a Google service account JSON key in repo Settings → Secrets."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q rclone pandoc
+
+      - name: Configure rclone with service account
+        run: |
+          mkdir -p ~/.config/rclone
+          echo '${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}' > /tmp/sa.json
+          cat > ~/.config/rclone/rclone.conf << EOF
+          [gdrive]
+          type = drive
+          scope = drive.readonly
+          service_account_file = /tmp/sa.json
+          EOF
+
+      - name: Download changed files from Drive
+        run: |
+          mkdir -p /tmp/drive-sync
+          rclone copy "gdrive:${{ env.DRIVE_FOLDER_ID }}" /tmp/drive-sync \
+            --drive-formats md \
+            --exclude "*.gdoc" \
+            --exclude "*.gsheet" \
+            --exclude "*.gslides" \
+            -v
+
+      - name: Convert .docx to Markdown
+        run: |
+          find /tmp/drive-sync -name "*.docx" | while read f; do
+            base="${f%.docx}"
+            pandoc "$f" -f docx -t gfm -o "${base}.md" \
+              --wrap=none \
+              --markdown-headings=atx
+            rm "$f"
+            echo "Converted: $f → ${base}.md"
+          done
+
+      - name: Copy synced files to repo
+        run: |
+          # 僅同步 frameworks/, profile/, references/ 目錄
+          for dir in frameworks profile references; do
+            if [ -d "/tmp/drive-sync/$dir" ]; then
+              cp -r /tmp/drive-sync/$dir/* "$dir/" 2>/dev/null || true
+            fi
+          done
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet && git diff --cached --quiet && \
+            echo "changed=false" >> $GITHUB_OUTPUT || \
+            echo "changed=true" >> $GITHUB_OUTPUT
+          # 也檢查 untracked 新檔案
+          if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push if changed
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "sync: update from Google Drive ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+          git push
+
+      - name: No changes
+        if: steps.diff.outputs.changed == 'false'
+        run: echo "No changes from Drive. Skipping commit."
